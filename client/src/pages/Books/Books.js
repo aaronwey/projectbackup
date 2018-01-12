@@ -27,11 +27,11 @@ class Books extends Component {
   loadCrypto = (name) => {
     
     API.getCrypto(name)
-      .then((res) =>
-          console.log(res.data[0].name, res.data[0].price_usd)
-        )
-      .then(()=>
-        console.log(this.state.name));
+      .then((res) =>{
+          let price = res.data[0].price_usd;
+          const value = price * this.state.currency[0].units;
+          return console.log(value);
+        })
   };
 
   checkCrypto = (name) => {
@@ -46,20 +46,20 @@ class Books extends Component {
     }, 5000);
   };
 
-  checkTravel = () => {
-    API.display()
-      .then((res) =>
-        console.log(res.data));
-  };
-
-
   loadCryptoDB = () => {
     API.getCryptoDB()
       .then(res =>
         this.setState({ currency: res.data })
       )
+      .then(console.log(this.state.currency))
       .catch(err => console.log(err));
   };
+
+  // mapDB = () => {
+  //   this.state.currency.map(coin =>
+  //     ()
+  // }
+
   deleteCrypto = id => {
     API.deleteCrypto(id)
       .then(res => this.loadCryptoDB())
@@ -110,6 +110,7 @@ class Books extends Component {
   };
 
 
+
   render() {
     return (
       <Container fluid>
@@ -126,6 +127,9 @@ class Books extends Component {
               </button>
                <button onClick={() => this.display()}>
                display! 
+              </button>
+              <button onClick={() => console.log(this.state.currency)}>
+               currency
               </button>
             <form>
               <Input
@@ -177,10 +181,11 @@ class Books extends Component {
                   <ListItem key={coin._id}>
                     <Link to={"/crypto/" + coin._id}>
                       <strong>
-                        {coin.name} by {coin.units}
+                        {coin.name} : units {coin.units} : price {coin.units}
                       </strong>
                     </Link>
-                    <DeleteBtn onClick={() => this.deleteCrypto(coin._id)} />
+                    
+                    <DeleteBtn onClick={() => this.loadCrypto(coin.name)} />
                   </ListItem>
                 ))}
               </List>
